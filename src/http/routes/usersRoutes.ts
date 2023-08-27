@@ -24,4 +24,12 @@ export async function usersRoutes(app: FastifyInstance) {
     },
     controllers.update,
   )
+
+  app.delete(
+    '/users/:userId',
+    {
+      preHandler: tokenJWTValidation,
+    },
+    controllers.destroy,
+  )
 }

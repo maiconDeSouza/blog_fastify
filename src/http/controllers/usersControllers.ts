@@ -28,6 +28,10 @@ const updateBodySchema = z.object({
   passwordTwo: z.union([z.string().min(3).max(24), z.string().default('')]),
 })
 
+const destroyBodySchema = z.object({
+  password: z.string().min(6).max(24),
+})
+
 const userIDParamsSchema = z.object({
   userId: z.string().uuid(),
 })
@@ -126,6 +130,24 @@ async function update(request: FastifyRequest, reply: FastifyReply) {
   }
 }
 
+async function destroy(request: FastifyRequest, reply: FastifyReply) {
+  const services = await runServices()
+  const { userId } = userIDParamsSchema.parse(request.params)
+  const { sub } = subUserSchema.parse(request.user)
+  const { password } = destroyBodySchema.parse(request.body)
+
+  try {
+    const userDel = await services.destroy(userId, sub, password)
+    reply.status(200).send({
+      code: 200,
+      message: `User deleted successfully.`,
+      userDel,
+    })
+  } catch (error) {
+    handleCatchError(error, reply)
+  }
+}
+
 export async function usersControllers() {
-  return { create, getUser, login, update }
+  return { create, getUser, login, update, destroy }
 }

@@ -37,6 +37,14 @@ async function update(userId: string, data: createUsersDTO) {
   return userUp
 }
 
+async function destroy(userId: string) {
+  const db = await runDB()
+
+  const userDel = await db.destroy(userId)
+
+  return userDel
+}
+
 export async function usersRepositories() {
-  return { create, show, showEmail, update }
+  return { create, show, showEmail, update, destroy }
 }

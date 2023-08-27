@@ -175,6 +175,33 @@ async function showUserUpdate(
   return userUp
 }
 
+async function destroy(userId: string, sub: string, password: string) {
+  const repositories = await runRepositories()
+  const u = await utils()
+  const passwordConfig = true
+  const post = false
+
+  if (userId !== sub) {
+    throw new AppError('Unauthorized access.', 401)
+  }
+
+  const user = await repositories.show(userId, passwordConfig, post)
+
+  if (!user?.id) {
+    throw new AppError('User not found.', 404)
+  }
+
+  const hashPassword = await u.generateHashPassword(password)
+
+  if (hashPassword !== user.password) {
+    throw new AppError('Invalid password.', 400)
+  }
+
+  const userDel = await repositories.destroy(userId)
+
+  return userDel
+}
+
 export async function usersServices() {
-  return { create, login, showUser, showPosts, showUserUpdate }
+  return { create, login, showUser, showPosts, showUserUpdate, destroy }
 }
