@@ -11,4 +11,12 @@ export async function postRoutes(app: FastifyInstance) {
     },
     controllers.create,
   )
+
+  app.put(
+    '/posts/published/:userId/:postId',
+    {
+      preHandler: tokenJWTValidation,
+    },
+    controllers.published,
+  )
 }

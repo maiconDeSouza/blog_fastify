@@ -13,6 +13,30 @@ async function create(data: createPostsDTO) {
   return newPost
 }
 
+async function show(userId: string, postId: string) {
+  const db = await runDB()
+
+  const post = await db.show(userId, postId)
+
+  return post
+}
+
+async function updatePublished(
+  userId: string,
+  postId: string,
+  published: boolean,
+) {
+  const db = await runDB()
+
+  const data = {
+    published,
+  }
+
+  const updatePostPublished = await db.update(userId, postId, data)
+
+  return updatePostPublished
+}
+
 export async function postsRepositories() {
-  return { create }
+  return { create, show, updatePublished }
 }

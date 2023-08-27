@@ -24,6 +24,29 @@ async function create(
   return newPost
 }
 
+async function published(userId: string, postId: string, sub: string) {
+  const repositories = await runRepositories()
+  if (userId !== sub) {
+    throw new AppError('Unauthorized access.', 401)
+  }
+
+  const post = await repositories.show(userId, postId)
+
+  if (!post?.id) {
+    throw new AppError('User or post not found.', 404)
+  }
+
+  const published = !post.published
+
+  const updatePostPublished = await repositories.updatePublished(
+    userId,
+    postId,
+    published,
+  )
+
+  return updatePostPublished
+}
+
 export async function postsServices() {
-  return { create }
+  return { create, published }
 }
