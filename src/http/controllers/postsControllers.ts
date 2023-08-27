@@ -61,6 +61,23 @@ async function published(request: FastifyRequest, reply: FastifyReply) {
   }
 }
 
+async function index(request: FastifyRequest, reply: FastifyReply) {
+  const services = await runServices()
+  const { userId } = userIDParamsSchema.parse(request.params)
+  const { sub } = subUserSchema.parse(request.user)
+
+  try {
+    const allPosts = await services.index(userId, sub)
+    reply.status(200).send({
+      code: 200,
+      message: `ok`,
+      allPosts,
+    })
+  } catch (error) {
+    handleCatchError(error, reply)
+  }
+}
+
 export async function postsControllers() {
-  return { create, published }
+  return { create, published, index }
 }

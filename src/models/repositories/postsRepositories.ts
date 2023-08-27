@@ -37,6 +37,14 @@ async function updatePublished(
   return updatePostPublished
 }
 
+async function index(userId: string) {
+  const db = await runDB()
+
+  const allPosts = await db.index(userId)
+
+  return allPosts
+}
+
 export async function postsRepositories() {
-  return { create, show, updatePublished }
+  return { create, show, updatePublished, index }
 }

@@ -47,6 +47,17 @@ async function published(userId: string, postId: string, sub: string) {
   return updatePostPublished
 }
 
+async function index(userId: string, sub: string) {
+  const repositories = await runRepositories()
+  if (userId !== sub) {
+    throw new AppError('Unauthorized access.', 401)
+  }
+
+  const allPosts = await repositories.index(userId)
+
+  return allPosts
+}
+
 export async function postsServices() {
-  return { create, published }
+  return { create, published, index }
 }
