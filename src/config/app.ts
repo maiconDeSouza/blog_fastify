@@ -2,6 +2,7 @@ import fastify from 'fastify'
 import { usersRoutes } from '../http/routes/usersRoutes'
 import { env } from './env'
 import fastifyJwt from '@fastify/jwt'
+import { postRoutes } from '../http/routes/postsRoutes'
 
 const app = fastify()
 
@@ -13,6 +14,10 @@ app.register(fastifyJwt, {
 })
 
 app.register(usersRoutes, {
+  prefix,
+})
+
+app.register(postRoutes, {
   prefix,
 })
 

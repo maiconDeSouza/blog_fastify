@@ -1,7 +1,13 @@
 import { Prisma } from '@prisma/client'
 import { prismaClient } from '../../config/prismaClient'
 
-async function create(data: Prisma.PostCreateInput) {
+export interface createPostsDTO {
+  title: string
+  content: string
+  author_id: string
+}
+
+async function create(data: createPostsDTO) {
   const newPost = await prismaClient.post.create({ data })
   return newPost
 }
@@ -9,7 +15,7 @@ async function create(data: Prisma.PostCreateInput) {
 async function index(userId: string) {
   const posts = await prismaClient.post.findMany({
     where: {
-      userId,
+      author_id: userId,
     },
   })
   return posts
@@ -17,7 +23,7 @@ async function index(userId: string) {
 
 async function show(userId: string, postId: string) {
   const post = await prismaClient.post.findUnique({
-    where: { userId, id: postId },
+    where: { author_id: userId, id: postId },
   })
 
   return post
@@ -30,7 +36,7 @@ async function update(
 ) {
   const upPost = await prismaClient.post.update({
     where: {
-      userId,
+      author_id: userId,
       id: postId,
     },
     data,
@@ -42,7 +48,7 @@ async function update(
 async function destroy(userId: string, postId: string) {
   const post = await prismaClient.post.delete({
     where: {
-      userId,
+      author_id: userId,
       id: postId,
     },
     select: {
